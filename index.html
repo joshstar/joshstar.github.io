@@ -142,6 +142,7 @@
     .contact-item > div { font-size: 13px; }
     footer { padding: 32px 0 28px; background: var(--paper-deep); color: var(--muted); font-size: 12px; }
     .footer-inner { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 16px; text-align: center; }
+    .visitor-count { margin: 0; }
     .socials { display: flex; align-items: center; justify-content: center; gap: 12px; order: -1; flex-wrap: wrap; }
     .socials a { display: grid; place-items: center; width: 42px; height: 42px; color: var(--ink); font-size: 20px; background: var(--accent-strong); border: 1px solid var(--accent-strong); border-radius: 50%; transition: transform .2s, color .2s, border-color .2s; }
     .socials a:hover { color: var(--warm); border-color: var(--warm); transform: translateY(-2px); }
@@ -230,18 +231,31 @@
 
     <section class="section contact" id="contact"><div class="shell contact-layout"><div class="contact-head"><div><p class="section-kicker">CONTACT</p><h2>有系統地，聊聊下一步。</h2></div><p class="contact-copy">歡迎透過 Email 或電話聯繫。資訊中的部分資料目前以匿名示意保留，待補齊後即可直接使用。</p></div><div class="contact-list"><a class="contact-item" href="mailto:example@gmail.com"><i class="fa-solid fa-envelope" aria-hidden="true"></i><div><span>Email</span>example@gmail.com</div></a><a class="contact-item" href="tel:09XXXXXXXX"><i class="fa-solid fa-phone" aria-hidden="true"></i><div><span>Phone</span>09XXXXXXXX</div></a><div class="contact-item"><i class="fa-solid fa-location-dot" aria-hidden="true"></i><div><span>Location</span>台中市○○區</div></div><a class="contact-item" href="https://www.example.tw" target="_blank" rel="noreferrer"><i class="fa-solid fa-globe" aria-hidden="true"></i><div><span>Website</span>example.tw</div></a></div></div></section>
   </main>
-  <footer><div class="shell footer-inner"><span>© 2026 Josh Chen. Built for dependable systems.</span><div class="socials"><a href="https://www.example.tw/" aria-label="Links Hub" target="_blank" rel="noreferrer"><i class="fa-solid fa-link"></i></a><a href="https://www.example.tw/" aria-label="個人網站" target="_blank" rel="noreferrer"><i class="fa-solid fa-globe"></i></a><a href="https://www.linkedin.com/" aria-label="LinkedIn" target="_blank" rel="noreferrer"><i class="fa-brands fa-linkedin-in"></i></a><a href="https://github.com/" aria-label="GitHub" target="_blank" rel="noreferrer"><i class="fa-brands fa-github"></i></a><a href="https://twitter.com/" aria-label="Twitter" target="_blank" rel="noreferrer"><i class="fa-brands fa-twitter"></i></a><a href="https://fb.me/" aria-label="Facebook" target="_blank" rel="noreferrer"><i class="fa-brands fa-facebook-f"></i></a><a href="https://www.instagram.com/" aria-label="Instagram" target="_blank" rel="noreferrer"><i class="fa-brands fa-instagram"></i></a><a href="https://medium.com/" aria-label="Medium" target="_blank" rel="noreferrer"><i class="fa-brands fa-medium"></i></a><a href="https://www.example.tw/" aria-label="WordPress" target="_blank" rel="noreferrer"><i class="fa-brands fa-wordpress"></i></a><a href="https://www.example.tw/" aria-label="Blog" target="_blank" rel="noreferrer"><i class="fa-solid fa-blog"></i></a><a href="#profile" aria-label="回到頁面頂端"><i class="fa-solid fa-arrow-up"></i></a></div></div></footer>
+  <footer><div class="shell footer-inner"><span>© 2026 Josh Chen. Built for dependable systems.</span><p class="visitor-count">今日瀏覽：<span id="visitorToday" aria-live="polite">尚未設定</span> ・ 累計瀏覽：<span id="visitorTotal">尚未設定</span></p><div class="socials"><a href="https://www.example.tw/" aria-label="Links Hub" target="_blank" rel="noreferrer"><i class="fa-solid fa-link"></i></a><a href="https://www.example.tw/" aria-label="個人網站" target="_blank" rel="noreferrer"><i class="fa-solid fa-globe"></i></a><a href="https://www.linkedin.com/" aria-label="LinkedIn" target="_blank" rel="noreferrer"><i class="fa-brands fa-linkedin-in"></i></a><a href="https://github.com/" aria-label="GitHub" target="_blank" rel="noreferrer"><i class="fa-brands fa-github"></i></a><a href="https://twitter.com/" aria-label="Twitter" target="_blank" rel="noreferrer"><i class="fa-brands fa-twitter"></i></a><a href="https://fb.me/" aria-label="Facebook" target="_blank" rel="noreferrer"><i class="fa-brands fa-facebook-f"></i></a><a href="https://www.instagram.com/" aria-label="Instagram" target="_blank" rel="noreferrer"><i class="fa-brands fa-instagram"></i></a><a href="https://medium.com/" aria-label="Medium" target="_blank" rel="noreferrer"><i class="fa-brands fa-medium"></i></a><a href="https://www.example.tw/" aria-label="WordPress" target="_blank" rel="noreferrer"><i class="fa-brands fa-wordpress"></i></a><a href="https://www.example.tw/" aria-label="Blog" target="_blank" rel="noreferrer"><i class="fa-solid fa-blog"></i></a><a href="#profile" aria-label="回到頁面頂端"><i class="fa-solid fa-arrow-up"></i></a></div></div></footer>
   <script>
     const root = document.documentElement;
     const themeToggle = document.getElementById('themeToggle');
     const languageToggle = document.getElementById('languageToggle');
     const menuToggle = document.getElementById('menuToggle');
     const navLinks = document.getElementById('navLinks');
-    const savedTheme = localStorage.getItem('josh-theme');
+    let savedTheme = null;
+    try {
+      savedTheme = localStorage.getItem('josh-theme');
+    } catch (error) {
+      console.warn('Theme preference could not be read from browser storage.', error);
+    }
     if (savedTheme === 'dark') root.dataset.theme = 'dark';
     const updateThemeIcon = () => { themeToggle.innerHTML = root.dataset.theme === 'dark' ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>'; };
     updateThemeIcon();
-    themeToggle.addEventListener('click', () => { root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark'; localStorage.setItem('josh-theme', root.dataset.theme); updateThemeIcon(); });
+    themeToggle.addEventListener('click', () => {
+      root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      try {
+        localStorage.setItem('josh-theme', root.dataset.theme);
+      } catch (error) {
+        console.warn('Theme preference could not be saved to browser storage.', error);
+      }
+      updateThemeIcon();
+    });
     menuToggle.addEventListener('click', () => { const isOpen = navLinks.classList.toggle('open'); menuToggle.setAttribute('aria-expanded', isOpen); menuToggle.innerHTML = isOpen ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>'; });
     navLinks.addEventListener('click', (event) => { if (event.target.tagName === 'A') { navLinks.classList.remove('open'); menuToggle.setAttribute('aria-expanded', 'false'); menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>'; } });
     languageToggle.addEventListener('click', () => { languageToggle.textContent = languageToggle.textContent === 'EN' ? '中' : 'EN'; document.body.classList.toggle('english-hint'); });
@@ -249,6 +263,60 @@
     const links = document.querySelectorAll('.nav-links a');
     const observer = new IntersectionObserver((entries) => { entries.forEach((entry) => { if (entry.isIntersecting) { links.forEach((link) => link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id)); } }); }, { rootMargin: '-35% 0px -55% 0px' });
     sections.forEach((section) => observer.observe(section));
+
+    const visitorToday = document.getElementById('visitorToday');
+    const visitorTotal = document.getElementById('visitorTotal');
+    const visitorCounterUrl = 'https://script.google.com/macros/s/AKfycbwZ6ralOPdCPcUDXS7SEgzdXpQch8Vv-8vvOOtZTj6BHMGdH5N9zUgfVJLSu3a_hSbYAA/exec';
+    if (visitorCounterUrl !== 'YOUR_GAS_WEB_APP_URL') {
+      visitorToday.textContent = '載入中…';
+      visitorTotal.textContent = '載入中…';
+      const callbackName = `visitorCounterCallback_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      const script = document.createElement('script');
+      const clearRequest = () => {
+        window.clearTimeout(timeout);
+        script.remove();
+        delete window[callbackName];
+      };
+      const timeout = window.setTimeout(() => {
+        clearRequest();
+        visitorToday.textContent = '讀取逾時';
+        visitorTotal.textContent = '讀取逾時';
+      }, 10000);
+      window[callbackName] = (result) => {
+        clearRequest();
+        if (!result || !result.ok || !Number.isFinite(Number(result.today)) || !Number.isFinite(Number(result.total))) {
+          visitorToday.textContent = '讀取失敗';
+          visitorTotal.textContent = '讀取失敗';
+          return;
+        }
+        visitorToday.textContent = Number(result.today).toLocaleString('zh-TW');
+        visitorTotal.textContent = Number(result.total).toLocaleString('zh-TW');
+      };
+      script.onerror = () => {
+        clearRequest();
+        visitorToday.textContent = '讀取失敗';
+        visitorTotal.textContent = '讀取失敗';
+      };
+      const endpoint = new URL(visitorCounterUrl);
+      endpoint.searchParams.set('callback', callbackName);
+      endpoint.searchParams.set('page', window.location.hostname + window.location.pathname);
+      try {
+        const uidStorageKey = 'josh-visitor-id';
+        let uid = localStorage.getItem(uidStorageKey);
+        if (!uid || !/^[A-Za-z0-9_-]{16,64}$/.test(uid)) {
+          uid = Array.from(crypto.getRandomValues(new Uint8Array(16)), (value) => value.toString(16).padStart(2, '0')).join('');
+          localStorage.setItem(uidStorageKey, uid);
+        }
+        endpoint.searchParams.set('uid', uid);
+      } catch (error) {
+        clearRequest();
+        visitorToday.textContent = '瀏覽器儲存不可用';
+        visitorTotal.textContent = '瀏覽器儲存不可用';
+        return;
+      }
+      script.src = endpoint.toString();
+      document.head.appendChild(script);
+    }
   </script>
 </body>
 </html>
